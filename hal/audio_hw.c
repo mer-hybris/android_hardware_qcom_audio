@@ -2358,6 +2358,9 @@ static void adev_close_output_stream(struct audio_hw_device *dev __unused,
             free(out->compr_config.codec);
     }
 
+    if (adev->primary_output == out)
+        adev->primary_output = NULL;
+
     if (adev->voice_tx_output == out)
         adev->voice_tx_output = NULL;
 
