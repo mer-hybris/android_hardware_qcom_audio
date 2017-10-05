@@ -2816,8 +2816,8 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
                                                 &adev->streams_output_cfg_list,
                                                 devices, flags, format, out->sample_rate,
                                                 out->bit_width, &out->app_type_cfg);
-    if ((out->usecase == USECASE_AUDIO_PLAYBACK_PRIMARY) ||
-        (flags & AUDIO_OUTPUT_FLAG_PRIMARY)) {
+
+    if (out->flags & AUDIO_OUTPUT_FLAG_PRIMARY) {
         /* Ensure the default output is not selected twice */
         if(adev->primary_output == NULL)
             adev->primary_output = out;
@@ -2907,6 +2907,9 @@ static void adev_close_output_stream(struct audio_hw_device *dev __unused,
         if (out->compr_config.codec != NULL)
             free(out->compr_config.codec);
     }
+
+    if (adev->primary_output == out)
+        adev->primary_output = NULL;
 
     if (adev->voice_tx_output == out)
         adev->voice_tx_output = NULL;
